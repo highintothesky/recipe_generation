@@ -1,0 +1,16 @@
+planning RNN recipe generation
+segmentation, getting rid of useless words (ground in ground beef etc.)
+check the EM paper for getting rid of words/grouping
+words/word groups 2 vectors (possible google word2vec lib)
+train RNN with ingredients as sequential inputs, cooking instructions
+
+first layer would have to predict the starting point.
+valid verbs: you don't deep fry a carrot. maybe create a separate (small) NN that generates the valid verbs given a set of ingredients. training this might require us to get all the associated verbs for every ingredient, by recording what verbs co-occur with a given ingredient in the recipe.
+
+maybe order the ingredient list, based on temporal relations within the recipe (if you're baking a cake, the baking part should be at the end, and if you're marinating something, that should happen right at the start). 
+
+we could group/cluster ingredients with a given verb, and use this to decide the order of ingredients that are fed into the RNN
+
+technical details:
+use python, theano, own RNN implementation.
+github repo
