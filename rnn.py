@@ -4,7 +4,7 @@
 # http://deeplearning.net/tutorial/rnnrbm.html
 
 
-# EXAMPLE:
+# EXAMPLE (https://github.com/gwtaylor/theano-rnn):
 """ Vanilla RNN
 
 @author Graham Taylor
