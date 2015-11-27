@@ -14,3 +14,12 @@ we could group/cluster ingredients with a given verb, and use this to decide the
 technical details:
 use python, theano, own RNN implementation.
 github repo
+
+
+
+RNN:
+inputs: ingredient list, actions (from chunked)
+outputs: recipe
+
+WHAT SOPHIE SAID THE PLAN WAS SUPPOSED TO BE:
+do generation on predicates/arguments in stead of words, look at the chunked data for this. so as inputs we'd use an ingredient list, plus some of the first steps from the chunked data, and see if we can generate the rest of the steps. so we don't generate grammatically correct text per se, but we generate steps to be taken in the recipe. we should work out a plan, see if we have any questions, and pester Ivan about them, maybe make an appointment to go through the details.
