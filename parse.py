@@ -21,11 +21,6 @@ for dirname in dirlist:
             new_path = os.path.join(recipe_type_path, name)
             recipe_paths.append(new_path)
 
-print type(dirnames)
-print type(new_path)
-print len(recipe_paths)
-print recipe_paths[2091]
-
 csv_path = os.path.join(mypath, "csv_data/chunked.csv")
 writer = csv.writer(open(csv_path, 'w')) #, delimeter = ',', quoting = csv.QUOTE_NONE)
 print csv_path
