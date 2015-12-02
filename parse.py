@@ -1,4 +1,4 @@
-# parsing and tokenizing recipe text. right now it only prints all the chunked recipes.
+# parsing and tokenizing recipe text. creates a csv file in ./csv_data/
 # the AllRecipesData folder should be in the same location as the recipe_generation folder
 
 import csv
