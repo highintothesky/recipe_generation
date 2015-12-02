@@ -1,15 +1,12 @@
 # parsing and tokenizing recipe text. right now it only prints all the chunked recipes.
 # the AllRecipesData folder should be in the same location as the recipe_generation folder
 
-import numpy as np
+import csv
 import os
-import nltk
 
 
 mypath = os.path.dirname(os.path.abspath(__file__))
-
 chunked_path = os.path.join(mypath, "../AllRecipesData/chunked/")
-
 
 dirlist = []
 for (dirpath, dirnames, filenames) in os.walk(chunked_path):
@@ -27,17 +24,16 @@ for dirname in dirlist:
 print type(dirnames)
 print type(new_path)
 print len(recipe_paths)
-print recipe_paths[200]
+print recipe_paths[2091]
 
-# TODO: parse the actual recipes in the recipe_paths list using nltk
-
-
-# with open("../AllRecipesData/BananaMuffins-fulltext/almond-banana-chocolate-muffins.txt", 'rb') as f:
-# 	print f.read()
-	# reader = csv.reader(f, skipinitialspace=True)
-    # reader.next()
-    # # Split full comments into sentences
-    # sentences = itertools.chain(*[nltk.sent_tokenize(x[0].decode('utf-8').lower()) for x in reader])
-    # # Append SENTENCE_START and SENTENCE_END
-    # sentences = ["%s %s %s" % (sentence_start_token, x, sentence_end_token) for x in sentences]
-# print "Parsed %d sentences." % (len(sentences))
+csv_path = os.path.join(mypath, "csv_data/chunked.csv")
+writer = csv.writer(open(csv_path, 'w')) #, delimeter = ',', quoting = csv.QUOTE_NONE)
+print csv_path
+for recipe in recipe_paths:
+    with open(recipe) as f:
+        for line in f:
+            if line != '\n':
+                tokens = line.strip().split(':')
+                if not((tokens[0] == 'SENTID') | (tokens[0] == 'SENT') | (tokens[0] == 'PREDID')):
+                    writer.writerow([tokens[0], tokens[1].replace('\"', '').strip()])
+    writer.writerow(['STOP', '0'])
