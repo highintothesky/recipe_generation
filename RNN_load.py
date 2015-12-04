@@ -20,7 +20,3 @@ print "Reading CSV file..."
 with open(csv_path, 'r') as csv_file:
 	csv_data = [data for data in csv.reader(csv_file)]
 chunk_data = np.asarray(csv_data)
-
-for i in range(len(chunk_data)):
-	if chunk_data[i][0] == "PARG":
-		print chunk_data[i]
