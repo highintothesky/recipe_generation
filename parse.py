@@ -21,7 +21,30 @@ for dirname in dirlist:
             new_path = os.path.join(recipe_type_path, name)
             recipe_paths.append(new_path)
 
+def trimBrack(tokens):
+    lrbstr = "-lrb-"
+    rrbstr = "-rrb-"
+    if tokens[0] == "DOBJ":
+        if tokens[1].find(lrbstr) != -1:
+            print tokens[1]
+        if tokens[1].find(rrbstr) != -1:
+            print tokens[1]
+    elif tokens[0] == "PARG":
+        if tokens[1].find(lrbstr) != -1:
+            tokens[1] = tokens[1][:tokens[1].find(lrbstr)]
+        if tokens[1].find(rrbstr) != -1:
+            tokens[1] = tokens[1][:tokens[1].find(rrbstr)-1]
+    
+    return tokens[1]
+
 csv_path = os.path.join(mypath, "csv_data/chunked.csv")
+
+try:
+    os.remove(csv_path)
+    print "csv file deleted"
+except OSError:
+    print "No csv file found!"
+
 writer = csv.writer(open(csv_path, 'w')) #, delimeter = ',', quoting = csv.QUOTE_NONE)
 for recipe in recipe_paths:
     with open(recipe) as f:
@@ -29,7 +52,14 @@ for recipe in recipe_paths:
             if line != '\n':
                 tokens = line.strip().split(':')
                 if not((tokens[0] == 'SENTID') | (tokens[0] == 'SENT') | (tokens[0] == 'PREDID')):
-                    if tokens[0] == "DOBJ":
+                    if tokens[0] == "PRED":
+                        writer.writerow(['PREDSTOP', 'PREDSTOP'])
+                        writer.writerow([tokens[0], tokens[1].replace('\"', '').strip()])                    
+                    elif tokens[0] == "DOBJ":
+                        tokens[1] = trimBrack(tokens)
                         writer.writerow((tokens[0], tokens[1].rsplit(' ', 1)[1]))
+                    elif tokens[0] == "PARG":
+                        tokens[1] = trimBrack(tokens)
+                        writer.writerow([tokens[0], tokens[1].replace('\"', '').strip()])
                     else: writer.writerow([tokens[0], tokens[1].replace('\"', '').strip()])
-    writer.writerow(['STOP', '0'])
+    writer.writerow(['STOP', 'STOP'])
