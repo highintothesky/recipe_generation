@@ -21,18 +21,27 @@ for dirname in dirlist:
             new_path = os.path.join(recipe_type_path, name)
             recipe_paths.append(new_path)
 
+#trimBrack trimms "-rbl-" and "-rrb" strings from chucked data
 def trimBrack(tokens):
     lrbstr = "-lrb-"
     rrbstr = "-rrb-"
+    #trim DOBJ
     if tokens[0] == "DOBJ":
         if tokens[1].find(lrbstr) != -1:
             tokens[1] = tokens[1][:tokens[1].find(lrbstr)]
+        if tokens[1].find(rrbstr) != -1:
+            tokens[1] = tokens[1].replace("-rrb-","")
+    #trim PARG
     elif tokens[0] == "PARG":
         if tokens[1].find(lrbstr) != -1:
             tokens[1] = tokens[1][:tokens[1].find(lrbstr)]
         if tokens[1].find(rrbstr) != -1:
             tokens[1] = tokens[1][:tokens[1].find(rrbstr)-1]
-    
+    #trim OARG
+    elif tokens[0] == "OARG":
+        if tokens[1].find(lrbstr) != -1:
+            tokens[1] = tokens[1][:tokens[1].find(lrbstr)]
+    #return trimmed token
     return tokens[1]
 
 csv_path = os.path.join(mypath, "csv_data/chunked.csv")
@@ -59,5 +68,7 @@ for recipe in recipe_paths:
                     elif tokens[0] == "PARG":
                         tokens[1] = trimBrack(tokens)
                         writer.writerow([tokens[0], tokens[1].replace('\"', '').strip()])
+                    elif tokens[0] == "OARG":
+                        tokens[1] = trimBrack(tokens)
                     else: writer.writerow([tokens[0], tokens[1].replace('\"', '').strip()])
     writer.writerow(['STOP', 'STOP'])
