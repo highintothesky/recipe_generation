@@ -26,9 +26,7 @@ def trimBrack(tokens):
     rrbstr = "-rrb-"
     if tokens[0] == "DOBJ":
         if tokens[1].find(lrbstr) != -1:
-            print tokens[1]
-        if tokens[1].find(rrbstr) != -1:
-            print tokens[1]
+            tokens[1] = tokens[1][:tokens[1].find(lrbstr)]
     elif tokens[0] == "PARG":
         if tokens[1].find(lrbstr) != -1:
             tokens[1] = tokens[1][:tokens[1].find(lrbstr)]
