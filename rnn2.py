@@ -63,8 +63,7 @@ with open('csv_data/chunked.csv', 'rb') as f:
 for i in np.arange(20):
     print sentence_array[i]
 
-class RNNNumpy:
-     
+class rnn2:
     def __init__(self, word_dim, hidden_dim=100, bptt_truncate=4):
         # Assign instance variables
         self.word_dim = word_dim
@@ -91,17 +90,17 @@ class RNNNumpy:
             o[t] = softmax(self.V.dot(s[t]))
         return [o, s]
      
-    RNNNumpy.forward_propagation = forward_propagation
+    rnn2.forward_propagation = forward_propagation
 
     def predict(self, x):
         # Perform forward propagation and return index of the highest score
         o, s = self.forward_propagation(x)
         return np.argmax(o, axis=1)
      
-    RNNNumpy.predict = predict
+    rnn2.predict = predict
 
 np.random.seed(10)
-model = RNNNumpy(vocabulary_size)
+model = rnn2(vocabulary_size)
 o, s = model.forward_propagation(X_train[10])
 print o.shape
 print o
