@@ -2,6 +2,11 @@ import numpy as np
 import csv
 import itertools
 import nltk
+import operator
+import sys
+from datetime import datetime
+from utils import *
+import matplotlib.pyplot as plt
 import theano.tensor as Th
 
 
@@ -32,7 +37,7 @@ class rnn2:
 	        # Note that we are indxing U by x[t]. This is the same as multiplying U with a one-hot vector.
 	        s[t] = np.tanh(self.U[:,x[t]] + self.W.dot(s[t-1]))
 	        print self.V.dot(s[t])
-	        o[t] = Th.nnet.softmax(self.V.dot(s[t]))
+	        o[t] = softmax(self.V.dot(s[t]))
 	    return [o, s]
 	 
 	rnn2.forward_propagation = forward_propagation
