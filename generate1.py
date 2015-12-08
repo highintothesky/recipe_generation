@@ -17,6 +17,8 @@ index_to_word = {}
 for key, val in csv.reader(open("csv_data/word_to_index.csv")):
     index_to_word[key] = val
 
+
+
 def generate_sentence(model):
     # We start the sentence with the start token
     new_sentence = [word_to_index[sentence_start_token]]

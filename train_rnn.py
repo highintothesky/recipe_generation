@@ -48,26 +48,14 @@ with open('csv_data/chunked.csv', 'rb') as f:
         elif tag == 'PREDSTOP':
             temp_sentence = pred_name + dobj_name + prep_name + other_args + sentence_end_token
             sentence_array.append(temp_sentence)
-            # print sentence
             other_args = ''
             pred_name = ''
             prep_name = ''
             temp_sentence = ''
             dobj_name = ''
         else:
-        	# print 'no pred!'
         	other_args += argument + ' '
-        # if tag == 'PRED':
-        #     sentence += sentence_start_token + argument + ' '
-        #     # print 'got a predicate'
-        # elif tag == 'PREDSTOP':
-        #     sentence += sentence_end_token
-        #     sentence_array.append(sentence)
-        #     # print sentence
-        #     sentence = ''
-        # else:
-        #     # print 'no pred!'
-        #     sentence += argument + ' '
+
 
 
 print "Parsed %d sentences." % (len(sentence_array))
