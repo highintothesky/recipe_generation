@@ -1,2 +1,3 @@
 /csv_data/chunked.csv
 *.pyc
+/models/*
