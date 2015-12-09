@@ -18,9 +18,9 @@ from rnn3 import *
 
 
 
-vocabulary_size = 3000
-sentence_start_token = "SENTENCE_START "
-sentence_end_token = " SENTENCE_END"
+vocabulary_size = 2688
+sentence_start_token = "SENTENCE_START"
+sentence_end_token = "SENTENCE_END"
 unknown_token = "UNKNOWN_TOKEN"
  
 # Read the data and append SENTENCE_START and SENTENCE_END tokens
@@ -39,7 +39,7 @@ with open('csv_data/chunked.csv', 'rb') as f:
         tag = x[0]
         argument = x[1]
         if tag == 'PRED':
-            pred_name = sentence_start_token + argument + ' '
+            pred_name = sentence_start_token + ' ' + argument + ' '
             # print 'got a predicate'
         elif tag == 'PREP':
             prep_name = argument + ' '
@@ -81,9 +81,13 @@ for key, val in word_to_index.items():
     w1.writerow([key, val])
 
 with open("csv_data/index_to_word.csv", "wb") as f:
-    writer = csv.writer(f)
-    writer.writerows(index_to_word)
+    for word in index_to_word:
+        f.write(word + "\n")
+#     writer.writerows(index_to_word)
 
+# w2 = csv.writer(open("csv_data/index_to_word.csv", "w"))
+# for word in index_to_word:
+#     w2.writerow(word)
 
 print "Using vocabulary size %d." % vocabulary_size
 print "The least frequent word in our vocabulary is '%s' and appeared %d times." % (vocab[-1][0], vocab[-1][1])
@@ -110,6 +114,38 @@ end = time.time()
 print end - start
 
 model = rnn3(vocabulary_size)
-losses = train_with_sgd(model, X_train[:3000], y_train[:3000], nepoch=10, evaluate_loss_after=1)
-
+losses = train_with_sgd(model, X_train[:8000], y_train[:8000], nepoch=12, evaluate_loss_after=1)
 save_model_parameters_theano('./models/trained-model-theano.npz', model)
+
+# model = rnn3(vocabulary_size, hidden_dim=50)
+# load_model_parameters_theano('./models/trained-model-theano.npz', model)
+
+def generate_sentence(model):
+    # We start the sentence with the start token
+    new_sentence = [word_to_index[sentence_start_token]]
+    # print new_sentence
+    # print new_sentence[-1]
+    # Repeat until we get an end token
+    while not new_sentence[-1] == word_to_index[sentence_end_token]:
+        next_word_probs = model.forward_propagation(new_sentence)
+        sampled_word = word_to_index[unknown_token]
+        # We don't want to sample unknown words
+        while sampled_word == word_to_index[unknown_token]:
+            samples = np.random.multinomial(1, next_word_probs[-1])
+            sampled_word = np.argmax(samples)
+        new_sentence.append(sampled_word)
+    # for x in new_sentence:
+    #     print x
+    #     print index_to_word[x]
+    sentence_str = [index_to_word[x] for x in new_sentence[1:-1]]
+    return sentence_str
+ 
+num_sentences = 10
+senten_min_length = 16
+ 
+for i in range(num_sentences):
+    sent = []
+    # We want long sentences, not sentences with one or two words
+    while len(sent) < senten_min_length:
+        sent = generate_sentence(model)
+    print " ".join(sent)
