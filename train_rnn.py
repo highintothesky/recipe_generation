@@ -72,6 +72,9 @@ w1 = csv.writer(open("csv_data/word_to_index.csv", "w"))
 for key, val in word_to_index.items():
     w1.writerow([key, val])
 
+# with open("csv_data/word_to_index.csv", "w") as f:
+#     f.write(json.dumps(word_to_index))
+
 with open("csv_data/index_to_word.csv", "wb") as f:
     for word in index_to_word:
         f.write(word + "\n")
@@ -98,12 +101,12 @@ y_train = np.asarray([[word_to_index[w] for w in sent[1:]] for sent in tokenized
 
 print "Created train set"
 
-np.random.seed(10)
-model = rnn3(vocabulary_size)
-start = time.time()
-model.sgd_step(X_train[10], y_train[10], 0.005)
-end = time.time()
-print end - start
+# np.random.seed(10)
+# model = rnn3(vocabulary_size)
+# start = time.time()
+# model.sgd_step(X_train[10], y_train[10], 0.005)
+# end = time.time()
+# print end - start
 
 # Uncomment to train RNN
 # model = rnn3(vocabulary_size)

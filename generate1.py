@@ -19,7 +19,7 @@ with open('csv_data/index_to_word.csv', 'rb') as f:
 
 print index_to_word[0:20]
 
-model = rnn3(vocabulary_size, hidden_dim=50)
+model = rnn3(vocabulary_size)
 # losses = train_with_sgd(model, X_train, y_train, nepoch=50)
 # save_model_parameters_theano('./data/trained-model-theano.npz', model)
 load_model_parameters_theano('./models/trained-model-theano.npz', model)
@@ -28,6 +28,8 @@ load_model_parameters_theano('./models/trained-model-theano.npz', model)
 def generate_sentence(model):
     # We start the sentence with the start token
     new_sentence = [word_to_index[sentence_start_token]]
+    # print new_sentence
+    # print new_sentence[-1]
     # Repeat until we get an end token
     while not new_sentence[-1] == word_to_index[sentence_end_token]:
         next_word_probs = model.forward_propagation(new_sentence)
@@ -37,11 +39,14 @@ def generate_sentence(model):
             samples = np.random.multinomial(1, next_word_probs[-1])
             sampled_word = np.argmax(samples)
         new_sentence.append(sampled_word)
+    # for x in new_sentence:
+    #     print x
+    #     print index_to_word[x]
     sentence_str = [index_to_word[x] for x in new_sentence[1:-1]]
     return sentence_str
  
 num_sentences = 10
-senten_min_length = 7
+senten_min_length = 16
  
 for i in range(num_sentences):
     sent = []
