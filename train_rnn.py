@@ -10,7 +10,6 @@ from utils import *
 import matplotlib.pyplot as plt
 import theano.tensor as T
 import theano as theano
-
 from rnn3 import *
 
 vocabulary_size = 2688
