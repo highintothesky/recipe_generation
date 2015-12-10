@@ -106,12 +106,15 @@ model.sgd_step(X_train[10], y_train[10], 0.005)
 end = time.time()
 print end - start
 
-model = rnn3(vocabulary_size)
-losses = train_with_sgd(model, X_train[:8000], y_train[:8000], nepoch=12, evaluate_loss_after=1)
-save_model_parameters_theano('./models/trained-model-theano.npz', model)
+# Uncomment to train RNN
+# model = rnn3(vocabulary_size)
+# losses = train_with_sgd(model, X_train[:8000], y_train[:8000], nepoch=12, evaluate_loss_after=1)
+# save_model_parameters_theano('./models/trained-model-theano.npz', model)
 
+# Uncomment to load RNN
 # model = rnn3(vocabulary_size, hidden_dim=50)
-# load_model_parameters_theano('./models/trained-model-theano.npz', model)
+model = rnn3(vocabulary_size)
+load_model_parameters_theano('./models/trained-model-theano.npz', model)
 
 
 def generate_sentence(model):

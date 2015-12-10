@@ -10,6 +10,7 @@ from utils import *
 import matplotlib.pyplot as plt
 import theano.tensor as T
 import theano as theano
+import warnings
 
 
 class rnn3:
@@ -39,13 +40,16 @@ class rnn3:
             s_t = T.tanh(U[:, x_t] + W.dot(s_t_prev))
             o_t = T.nnet.softmax(V.dot(s_t))
             return [o_t[0], s_t]
-        [o, s], updates = theano.scan(
-            forward_prop_step,
-            sequences=x,
-            outputs_info=[None, dict(initial=T.zeros(self.hidden_dim))],
-            non_sequences=[U, V, W],
-            truncate_gradient=self.bptt_truncate,
-            strict=True)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            [o, s], updates = theano.scan(
+                forward_prop_step,
+                sequences=x,
+                outputs_info=[None, dict(initial=T.zeros(self.hidden_dim))],
+                non_sequences=[U, V, W],
+                truncate_gradient=self.bptt_truncate,
+                strict=True)
 
         prediction = T.argmax(o, axis=1)
         o_error = T.sum(T.nnet.categorical_crossentropy(o, y))
