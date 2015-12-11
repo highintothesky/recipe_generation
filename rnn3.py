@@ -60,6 +60,7 @@ class rnn3:
         dW = T.grad(o_error, W)
 
         # Assign functions
+        print type(x), type(o)
         self.forward_propagation = theano.function([x], o)
         self.predict = theano.function([x], prediction)
         self.ce_error = theano.function([x, y], o_error)

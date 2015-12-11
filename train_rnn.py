@@ -5,9 +5,7 @@ import nltk
 import operator
 import sys
 import time
-from datetime import datetime
 from utils import *
-import matplotlib.pyplot as plt
 import theano.tensor as T
 import theano as theano
 from rnn3 import *
@@ -54,8 +52,6 @@ print "Parsed %d sentences." % (len(sentence_array))
 
 tokenized_sentences = [nltk.word_tokenize(sent) for sent in sentence_array]
 
-# for i in np.arange(20):
-#     print sentence_array[i]
 
 # Count the word frequencies
 word_freq = nltk.FreqDist(itertools.chain(*tokenized_sentences))
@@ -67,22 +63,16 @@ index_to_word = [x[0] for x in vocab]
 index_to_word.append(unknown_token)
 word_to_index = dict([(w, i) for i, w in enumerate(index_to_word)])
 
+with open("csv_data/index_to_word.txt", "w") as outfile:
+    for item in index_to_word:
+        outfile.write("%s\n" % item)
 
-w1 = csv.writer(open("csv_data/word_to_index.csv", "w"))
-for key, val in word_to_index.items():
-    w1.writerow([key, val])
+with open("csv_data/word_to_index.txt", "w") as outfile:
+    for key, val in word_to_index.items():
+        # print type(key), type(val)
+        line = key + ',' + str(val)
+        outfile.write("%s\n" % line)
 
-# with open("csv_data/word_to_index.csv", "w") as f:
-#     f.write(json.dumps(word_to_index))
-
-with open("csv_data/index_to_word.csv", "wb") as f:
-    for word in index_to_word:
-        f.write(word + "\n")
-#     writer.writerows(index_to_word)
-
-# w2 = csv.writer(open("csv_data/index_to_word.csv", "w"))
-# for word in index_to_word:
-#     w2.writerow(word)
 
 print "Using vocabulary size %d." % vocabulary_size
 print "The least frequent word in our vocabulary is '%s' and appeared %d times." % (vocab[-1][0], vocab[-1][1])
@@ -91,8 +81,8 @@ print "The least frequent word in our vocabulary is '%s' and appeared %d times."
 for i, sent in enumerate(tokenized_sentences):
     tokenized_sentences[i] = [w if w in word_to_index else unknown_token for w in sent]
 
-print "\nExample sentence: '%s'" % sentence_array[0]
-print "\nExample sentence after Pre-processing: '%s'" % tokenized_sentences[0]
+# print "\nExample sentence: '%s'" % sentence_array[0]
+# print "\nExample sentence after Pre-processing: '%s'" % tokenized_sentences[0]
 
 # Create the training data
 X_train = np.asarray([[word_to_index[w] for w in sent[:-1]] for sent in tokenized_sentences])
@@ -101,12 +91,7 @@ y_train = np.asarray([[word_to_index[w] for w in sent[1:]] for sent in tokenized
 
 print "Created train set"
 
-# np.random.seed(10)
-# model = rnn3(vocabulary_size)
-# start = time.time()
-# model.sgd_step(X_train[10], y_train[10], 0.005)
-# end = time.time()
-# print end - start
+
 
 # Uncomment to train RNN
 # model = rnn3(vocabulary_size)
@@ -122,8 +107,6 @@ load_model_parameters_theano('./models/trained-model-theano.npz', model)
 def generate_sentence(model):
     # We start the sentence with the start token
     new_sentence = [word_to_index[sentence_start_token]]
-    # print new_sentence
-    # print new_sentence[-1]
     # Repeat until we get an end token
     while not new_sentence[-1] == word_to_index[sentence_end_token]:
         next_word_probs = model.forward_propagation(new_sentence)
@@ -133,9 +116,6 @@ def generate_sentence(model):
             samples = np.random.multinomial(1, next_word_probs[-1])
             sampled_word = np.argmax(samples)
         new_sentence.append(sampled_word)
-    # for x in new_sentence:
-    #     print x
-    #     print index_to_word[x]
     sentence_str = [index_to_word[x] for x in new_sentence[1:-1]]
     return sentence_str
 

@@ -1,5 +1,7 @@
-# load model, generate some text
+# load model and index-word dicts and list, generate some text
 
+
+import json
 from utils import load_model_parameters_theano, save_model_parameters_theano
 from rnn3 import *
 
@@ -9,15 +11,26 @@ sentence_end_token = "SENTENCE_END"
 unknown_token = "UNKNOWN_TOKEN"
 
 word_to_index = {}
-for key, val in csv.reader(open("csv_data/word_to_index.csv")):
-    word_to_index[key] = val
+with open("csv_data/word_to_index.txt") as infile:
+    lines = infile.readlines()
+    for line in lines:
+        split_line = line.rsplit(',', 1)
+        key = (split_line[0]).rstrip('\n')
+        word_to_index[key] = int((split_line[1])[:-1])
+        print key, int((split_line[1])[:-1])
 
-# word_to_index = []
-with open('csv_data/index_to_word.csv', 'rb') as f:
-    reader = csv.reader(f)
-    index_to_word = map(tuple, reader)
 
-print index_to_word[0:20]
+
+index_to_word = []
+with open("csv_data/index_to_word.txt", "r") as infile:
+    index_to_word = infile.readlines()
+
+
+# print "word to index ", type(word_to_index)
+# print word_to_index["deli"]
+# print "index to word ", type(index_to_word)
+# print index_to_word[0:4]
+# print index_to_word[0:20]
 
 model = rnn3(vocabulary_size)
 # losses = train_with_sgd(model, X_train, y_train, nepoch=50)
@@ -28,8 +41,6 @@ load_model_parameters_theano('./models/trained-model-theano.npz', model)
 def generate_sentence(model):
     # We start the sentence with the start token
     new_sentence = [word_to_index[sentence_start_token]]
-    # print new_sentence
-    # print new_sentence[-1]
     # Repeat until we get an end token
     while not new_sentence[-1] == word_to_index[sentence_end_token]:
         next_word_probs = model.forward_propagation(new_sentence)
@@ -39,9 +50,6 @@ def generate_sentence(model):
             samples = np.random.multinomial(1, next_word_probs[-1])
             sampled_word = np.argmax(samples)
         new_sentence.append(sampled_word)
-    # for x in new_sentence:
-    #     print x
-    #     print index_to_word[x]
     sentence_str = [index_to_word[x] for x in new_sentence[1:-1]]
     return sentence_str
  
