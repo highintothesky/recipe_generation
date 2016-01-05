@@ -17,19 +17,21 @@ with open("csv_data/word_to_index.txt") as infile:
         split_line = line.rsplit(',', 1)
         key = (split_line[0]).rstrip('\n')
         word_to_index[key] = int((split_line[1])[:-1])
-        print key, int((split_line[1])[:-1])
+        # print key, int((split_line[1])[:-1])
 
 
 
 index_to_word = []
 with open("csv_data/index_to_word.txt", "r") as infile:
     index_to_word = infile.readlines()
+    # for line in infile.readlines():
+    #     index_to_word = line.rstrip('\n')
 
 
 # print "word to index ", type(word_to_index)
 # print word_to_index["deli"]
-# print "index to word ", type(index_to_word)
-# print index_to_word[0:4]
+print "index to word ", type(index_to_word)
+print index_to_word[0:4]
 # print index_to_word[0:20]
 
 model = rnn3(vocabulary_size)
@@ -53,8 +55,8 @@ def generate_sentence(model):
     sentence_str = [index_to_word[x] for x in new_sentence[1:-1]]
     return sentence_str
  
-num_sentences = 10
-senten_min_length = 16
+num_sentences = 20
+senten_min_length = 3
  
 for i in range(num_sentences):
     sent = []
